@@ -8,7 +8,7 @@ export default function App() {
 
   useEffect(() => {
     function connect() {
-      const source = new EventSource("http://localhost:5000/stream");
+      const source = new EventSource("https://stream-production-748d.up.railway.app/stream");
 
       source.onopen = () => {
         // clear the dots animation when connection is restored

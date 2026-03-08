@@ -1,29 +1,43 @@
 import express from "express";
 import cors from "cors";
+import multer from "multer";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 
-app.get("/stream", (req, res) => {
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    const allowed = [
+      "text/csv",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/vnd.ms-excel",
+    ];
+    if (allowed.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only .csv and .xlsx files are allowed"), false);
+    }
+  },
+});
 
-  const message = `WADE Says Hello, the server is running at port ${PORT}`;
-  const frames = message.split("").map((_, i) => message.slice(0, i + 1));
+app.post("/", upload.single("file"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
 
-  let i = 0;
+  const { originalname, mimetype, size, buffer } = req.file;
 
-  const interval = setInterval(() => {
-    res.write(`data: ${frames[i]}\n\n`);
-    i++;
-
-    // when we reach the last frame, stop — no more writing
-    if (i >= frames.length) clearInterval(interval);
-  }, 80);
-
-  req.on("close", () => clearInterval(interval));
+  res.json({
+    message: "File received successfully",
+    filename: originalname,
+    mimetype,
+    size,
+    bytes: buffer.length,
+  });
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

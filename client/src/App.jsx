@@ -1,75 +1,139 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
+import "./index.css";
+
+const SERVER = "https://stream-production-748d.up.railway.app";
 
 export default function App() {
-  const [frame, setFrame] = useState("");
-  const [connected, setConnected] = useState(false);
-  const [dots, setDots] = useState("");
-  const dotsInterval = useRef(null);
+  const [file, setFile] = useState(null);
+  const [dragOver, setDragOver] = useState(false);
+  const [status, setStatus] = useState("idle");
+  const [result, setResult] = useState(null);
+  const [errorMsg, setErrorMsg] = useState("");
+  const inputRef = useRef(null);
 
-  useEffect(() => {
-    function connect() {
-      const source = new EventSource("https://stream-production-748d.up.railway.app/stream");
+  function validateFile(f) {
+    const ext = f.name.split(".").pop().toLowerCase();
+    return ["csv", "xlsx", "xls"].includes(ext);
+  }
 
-      source.onopen = () => {
-        // clear the dots animation when connection is restored
-        setConnected(true);
-        setDots("");
-        setFrame(""); // reset so it animates from scratch
-        clearInterval(dotsInterval.current);
-      };
-
-      source.onmessage = (event) => {
-        setFrame(event.data);
-      };
-
-      source.onerror = () => {
-        setConnected(false);
-        source.close();
-
-        // start animating the dots
-        let d = 0;
-        dotsInterval.current = setInterval(() => {
-          d = (d + 1) % 4; // cycles 0,1,2,3 → "", ".", "..", "..."
-          setDots(".".repeat(d));
-        }, 500);
-
-        // try reconnecting every 3 seconds
-        setTimeout(connect, 3000);
-      };
+  function pickFile(f) {
+    if (!f) return;
+    if (!validateFile(f)) {
+      setErrorMsg("Only .csv, .xlsx, or .xls files are accepted.");
+      setFile(null);
+      return;
     }
+    setErrorMsg("");
+    setFile(f);
+    setStatus("idle");
+    setResult(null);
+  }
 
-    connect();
+  function onDrop(e) {
+    e.preventDefault();
+    setDragOver(false);
+    pickFile(e.dataTransfer.files[0]);
+  }
 
-    return () => clearInterval(dotsInterval.current);
-  }, []);
+  async function upload() {
+    if (!file) return;
+    setStatus("uploading");
+    setResult(null);
+    setErrorMsg("");
+
+    const form = new FormData();
+    form.append("file", file);
+
+    try {
+      const res = await fetch(`${SERVER}/upload`, { method: "POST", body: form });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Upload failed");
+      setResult(data);
+      setStatus("success");
+    } catch (err) {
+      setErrorMsg(err.message);
+      setStatus("error");
+    }
+  }
+
+  function reset() {
+    setFile(null);
+    setStatus("idle");
+    setResult(null);
+    setErrorMsg("");
+    if (inputRef.current) inputRef.current.value = "";
+  }
+
+  const fmt = (bytes) =>
+    bytes < 1024 ? `${bytes} B`
+    : bytes < 1048576 ? `${(bytes / 1024).toFixed(1)} KB`
+    : `${(bytes / 1048576).toFixed(2)} MB`;
 
   return (
-    <div className="terminal">
-      <div className="screen">
+    <div className="root">
+      <div className="card">
 
         <div className="header">
-          <div className={`dot ${connected ? "active" : ""}`} />
-          <div className="dot" />
-          <div className="dot" />
-          <span className="header-label">stream@localhost:5000</span>
+          <div className="header-dots">
+            <span className="dot dot-red" />
+            <span className="dot dot-yellow" />
+            <span className="dot dot-green" />
+          </div>
+          <span className="header-title">upload@localhost:5000</span>
         </div>
 
-        <div className="prompt-line">
-          <span className="prompt-symbol">›</span>
-          <span className="output">
-            {connected
-              ? <>{frame}<span className="cursor" /></>
-              : <>reconnecting{dots}</>
-            }
-          </span>
+        <div
+          className={`dropzone ${dragOver ? "dropzone-active" : ""} ${file ? "dropzone-filled" : ""}`}
+          onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={onDrop}
+          onClick={() => !file && inputRef.current?.click()}
+        >
+          <input
+            ref={inputRef}
+            type="file"
+            accept=".csv,.xlsx,.xls"
+            style={{ display: "none" }}
+            onChange={(e) => pickFile(e.target.files[0])}
+          />
+
+          {file ? (
+            <div className="file-info">
+              <span className="file-icon">{file.name.endsWith(".csv") ? "📄" : "📊"}</span>
+              <div>
+                <div className="file-name">{file.name}</div>
+                <div className="file-meta">{fmt(file.size)}</div>
+              </div>
+              <button className="clear-btn" onClick={(e) => { e.stopPropagation(); reset(); }}>✕</button>
+            </div>
+          ) : (
+            <div className="drop-prompt">
+              <span className="drop-icon">⇪</span>
+              <span className="drop-text">Drop a file or <u>browse</u></span>
+              <span className="drop-sub">.csv · .xlsx · .xls</span>
+            </div>
+          )}
         </div>
 
-        <div className="status-bar">
-          <span className="status-text">SSE / text-event-stream</span>
-          <span className={`status-text ${connected ? "live" : ""}`}>
-            {connected ? "● LIVE" : "○ DISCONNECTED"}
-          </span>
-        </div>
+        {errorMsg && <div className="error">⚠ {errorMsg}</div>}
+
+        <button
+          className={`upload-btn ${status === "uploading" ? "upload-btn-busy" : ""} ${!file || status === "uploading" ? "upload-btn-disabled" : ""}`}
+          onClick={upload}
+          disabled={!file || status === "uploading"}
+        >
+          {status === "uploading" ? "↻ Uploading…" : "Upload"}
+        </button>
+
+        {status === "success" && result && (
+          <div className="result">
+            <div className="result-row"><span className="result-label">status</span><span className="result-ok">✓ received</span></div>
+            <div className="result-row"><span className="result-label">filename</span><span className="result-val">{result.filename}</span></div>
+            <div className="result-row"><span className="result-label">mimetype</span><span className="result-val">{result.mimetype}</span></div>
+            <div className="result-row"><span className="result-label">size</span><span className="result-val">{fmt(result.size)}</span></div>
+            <div className="result-row"><span className="result-label">bytes in RAM</span><span className="result-val">{result.bytes.toLocaleString()}</span></div>
+          </div>
+        )}
 
       </div>
     </div>

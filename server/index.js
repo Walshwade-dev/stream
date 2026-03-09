@@ -11,28 +11,42 @@ app.use(cors());
 
 const REQUIRED_COLUMNS = [
   "Inspection Date",
-  "Registration",
-  "Transporter",
+  "registration",
+  "Transp",
   "Model",
   "Origin",
-  "Destination",
+  "destination",
   "Axleconf",
-  "Inspsticker",
-  "InsuSticker",
+  "Inspstick",
+  "InsuaranceStic",
   "Cargo",
-  "Permit issue date",
+  "Dpermitissu",
   "Height",
-  "Length_",
-  "Width_",
-  "Abnormal Load Permit",
-  "Total tyres",
-  "Load Weight",
-  "Authorized Weight",
+  "Length",
+  "Width",
+  "AbnormalLPermit",
+  "Totaltyres",
+  "weighofload",
+  "Authweight",
   "Permit No.",
   "Date of Travel",
-  "PStartD",
-  "PEndD",
+  "Start Date",
+  "End Date",
 ];
+
+
+// Strip excluded columns from every row
+const EXCLUDE_COLUMNS = ["No", "status", "Weighbridge Station Bound"];
+
+function stripColumns(rows) {
+  return rows.map((row) => {
+    const clean = { ...row };
+    EXCLUDE_COLUMNS.forEach((col) => delete clean[col]);
+    return clean;
+  });
+}
+
+
 
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -118,14 +132,14 @@ app.post("/upload", upload.single("file"), (req, res) => {
     });
   }
 
-  // Return first 10 rows
-  const preview = rows.slice(0, 10);
+  const cleaned = stripColumns(rows);
+  const previewRows = cleaned.slice(0, 10);
 
   return res.json({
     success: true,
     filename: req.file.originalname,
     total_rows: rows.length,
-    preview,
+    previewRows,
   });
 });
 

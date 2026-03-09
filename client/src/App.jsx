@@ -79,7 +79,7 @@ export default function App() {
             <span className="dot dot-yellow" />
             <span className="dot dot-green" />
           </div>
-          <span className="header-title">upload@localhost:5000</span>
+          <span className="header-title"></span>
         </div>
 
         <div

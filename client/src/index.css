@@ -29,8 +29,8 @@ body {
 .table-wrapper {
   overflow-x: auto;
   margin-top: 12px;
-  border: 1px solid #2a2a2a;
-  border-radius: 6px;
+  border: 1px solid #000;
+  border-radius: 0;
   max-height: 400px;
   overflow-y: auto;
 }
@@ -208,24 +208,27 @@ body {
 .preview-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11px;
+  font-size: 12px;
+  font-family: Arial, sans-serif;
   white-space: nowrap;
 }
 
 .preview-table th {
-  background: #1e1e1e;
-  color: #4ade80;
-  padding: 8px 12px;
+  background: #ffffff;
+  color: #000000;
+  padding: 6px 10px;
   text-align: left;
-  border-bottom: 1px solid #2a2a2a;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  border: 1px solid #000000;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
 }
 
 .preview-table td {
-  color: #ccc;
-  padding: 6px 12px;
-  border-bottom: 1px solid #1e1e1e;
+  color: #000000;
+  background: #ffffff;
+  padding: 5px 10px;
+  border: 1px solid #000000;
   font-family: Arial, sans-serif;
   font-size: 12px;
   text-transform: uppercase;
@@ -235,7 +238,4 @@ body {
   border-bottom: none;
 }
 
-.preview-table tbody tr:hover {
-  background: #1a1a1a;
-}
 

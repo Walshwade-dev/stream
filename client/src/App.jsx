@@ -50,13 +50,21 @@ export default function App() {
   ];
 
 
-  function downloadPDF() {
+function downloadPDF() {
     const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a3" });
 
     const headers = PDF_COLUMNS.map((c) => c.label);
 
     const rows = result.previewRows.map((row) =>
-      PDF_COLUMNS.map((c) => formatCell(c.key, row[c.key]) ?? "")
+      PDF_COLUMNS.map((c) => {
+        let val = formatCell(c.key, row[c.key]) ?? "";
+        // truncate cargo to first 2 items
+        if (c.key === "Cargo") {
+          const parts = String(val).split(",").map((s) => s.trim());
+          val = parts.slice(0, 2).join(", ") + (parts.length > 2 ? "..." : "");
+        }
+        return val;
+      })
     );
 
     autoTable(doc, {
@@ -66,16 +74,24 @@ export default function App() {
         font: "helvetica",
         fontSize: 7,
         cellPadding: 3,
+        textColor: [0, 0, 0],
+        fillColor: false,
+        lineColor: [0, 0, 0],
+        lineWidth: 0.5,
       },
       headStyles: {
-        fillColor: [30, 30, 30],
-        textColor: [74, 222, 128],
+        fillColor: false,
+        textColor: [0, 0, 0],
         fontStyle: "bold",
         fontSize: 7,
+        lineColor: [0, 0, 0],
+        lineWidth: 0.5,
       },
       alternateRowStyles: {
-        fillColor: [245, 245, 245],
+        fillColor: false,
       },
+      tableLineColor: [0, 0, 0],
+      tableLineWidth: 0.5,
       margin: { top: 30, left: 20, right: 20 },
     });
 
@@ -225,49 +241,50 @@ export default function App() {
           {status === "uploading" ? "↻ Uploading…" : "Upload"}
         </button>
 
-        <button className="download-btn" onClick={downloadPDF}>
-          ↓ Download PDF
-        </button>
 
         {status === "success" && result && (
-            <div className="result">
-              <div className="result-row">
-                <span className="result-label">status</span>
-                <span className="result-ok">✓ received</span>
-              </div>
-              <div className="result-row">
-                <span className="result-label">filename</span>
-                <span className="result-val">{result.filename}</span>
-              </div>
-              <div className="result-row">
-                <span className="result-label">total rows</span>
-                <span className="result-val">{result.total_rows?.toLocaleString()}</span>
-              </div>
+          <div className="result">
+            <div className="result-row">
+              <span className="result-label">status</span>
+              <span className="result-ok">✓ received</span>
+            </div>
+            <div className="result-row">
+              <span className="result-label">filename</span>
+              <span className="result-val">{result.filename}</span>
+            </div>
+            <div className="result-row">
+              <span className="result-label">total rows</span>
+              <span className="result-val">{result.total_rows?.toLocaleString()}</span>
+            </div>
 
-              {result.previewRows?.length > 0 && (
-                <div className="table-wrapper">
-                  <table className="preview-table">
-                    <thead>
-                      <tr>
-                        {Object.keys(result.previewRows[0]).map((col) => (
-                          <th key={col}>{col}</th>
+            {result.previewRows?.length > 0 && (
+              <div className="table-wrapper">
+                <table className="preview-table">
+                  <thead>
+                    <tr>
+                      {Object.keys(result.previewRows[0]).map((col) => (
+                        <th key={col}>{col}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.previewRows.map((row, i) => (
+                      <tr key={i}>
+                        {Object.entries(row).map(([col, val], j) => (
+                          <td key={j}>{formatCell(col, val)}</td>
                         ))}
                       </tr>
-                    </thead>
-                    <tbody>
-                      {result.previewRows.map((row, i) => (
-                        <tr key={i}>
-                          {Object.entries(row).map(([col, val], j) => (
-                            <td key={j}>{formatCell(col, val)}</td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          )}
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            <button className="download-btn" onClick={downloadPDF}>
+              ↓ Download PDF
+            </button>
+          </div>
+        )}
 
       </div>
     </div>

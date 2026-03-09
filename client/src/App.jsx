@@ -36,25 +36,36 @@ export default function App() {
   }
 
   async function upload() {
-    if (!file) return;
-    setStatus("uploading");
-    setResult(null);
-    setErrorMsg("");
+  if (!file) return;
+  setStatus("uploading");
+  setResult(null);
+  setErrorMsg("");
 
-    const form = new FormData();
-    form.append("file", file);
+  const form = new FormData();
+  form.append("file", file);
 
-    try {
-      const res = await fetch(`${SERVER}/upload`, { method: "POST", body: form });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
-      setResult(data);
-      setStatus("success");
-    } catch (err) {
-      setErrorMsg(err.message);
+  try {
+    const res = await fetch(`${SERVER}/upload`, { method: "POST", body: form });
+    const data = await res.json();
+    if (!res.ok) {
+      // show missing columns by name if present
+      if (data.missing_columns?.length) {
+        setErrorMsg(
+          `Missing required columns:\n${data.missing_columns.join(", ")}`
+        );
+      } else {
+        setErrorMsg(data.error || "Upload failed");
+      }
       setStatus("error");
+      return;
     }
+    setResult(data);
+    setStatus("success");
+  } catch (err) {
+    setErrorMsg(err.message);
+    setStatus("error");
   }
+}
 
   function reset() {
     setFile(null);
@@ -115,7 +126,11 @@ export default function App() {
           )}
         </div>
 
-        {errorMsg && <div className="error">⚠ {errorMsg}</div>}
+        {errorMsg && (
+          <div className="error" style={{ whiteSpace: "pre-line" }}>
+            ⚠ {errorMsg}
+          </div>
+        )}
 
         <button
           className={`upload-btn ${status === "uploading" ? "upload-btn-busy" : ""} ${!file || status === "uploading" ? "upload-btn-disabled" : ""}`}

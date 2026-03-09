@@ -144,9 +144,7 @@ export default function App() {
           <div className="result">
             <div className="result-row"><span className="result-label">status</span><span className="result-ok">✓ received</span></div>
             <div className="result-row"><span className="result-label">filename</span><span className="result-val">{result.filename}</span></div>
-            <div className="result-row"><span className="result-label">mimetype</span><span className="result-val">{result.mimetype}</span></div>
-            <div className="result-row"><span className="result-label">size</span><span className="result-val">{fmt(result.size)}</span></div>
-            <div className="result-row"><span className="result-label">bytes in RAM</span><span className="result-val">{result.bytes.toLocaleString()}</span></div>
+            <div className="result-row"><span className="result-label">total rows</span><span className="result-val">{result.total_rows?.toLocaleString()}</span></div>
           </div>
         )}
 

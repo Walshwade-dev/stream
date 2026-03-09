@@ -233,6 +233,7 @@ body {
 .preview-table th span {
   display: inline-block;
   /*transform: rotate(-90deg);*/
+  transform: rotate(-90deg) translateX(-20px);
   transform-origin: center center;
   white-space: normal;
   word-break: break-word;

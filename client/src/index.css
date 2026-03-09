@@ -241,7 +241,7 @@ body {
   line-height: 1.2;
 }
 
-.preview-table tbody td {
+.preview-table tbody tr td {
   color: #000000;
   background: #ffffff;
   border: 1px solid #000000;

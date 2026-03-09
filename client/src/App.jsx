@@ -11,12 +11,14 @@ export default function App() {
   const inputRef = useRef(null);
 
   const DATE_COLUMNS = [
-  "Inspection Date",
-  "Date of Travel",
-  "Start Date",
-  "End Date",
-  "Dpermitissu",
-];
+    "Inspection Date",
+    "Date of Travel",
+    "Start Date",
+    "End Date",
+    "Dpermitissu",
+  ];
+
+  const NUMBER_COLUMNS = ["weighofload", "Authweight"];
 
   function validateFile(f) {
     const ext = f.name.split(".").pop().toLowerCase();
@@ -43,13 +45,17 @@ export default function App() {
   }
 
   function formatCell(col, val) {
-  if (!val) return val;
-  if (DATE_COLUMNS.includes(col)) {
-    const d = new Date(val);
-    if (!isNaN(d)) return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+    if (!val) return val;
+    if (DATE_COLUMNS.includes(col)) {
+      const d = new Date(val);
+      if (!isNaN(d)) return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+    }
+    if (NUMBER_COLUMNS.includes(col)) {
+      const n = Math.round(Number(val));
+      if (!isNaN(n)) return n.toLocaleString();
+    }
+    return val;
   }
-  return val;
-}
 
   async function upload() {
   if (!file) return;

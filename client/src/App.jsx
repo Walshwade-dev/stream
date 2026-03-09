@@ -78,6 +78,8 @@ function downloadPDF() {
         fillColor: false,
         lineColor: [0, 0, 0],
         lineWidth: 0.5,
+        halign: "center",
+        valign: "middle",
       },
       headStyles: {
         fillColor: false,
@@ -86,9 +88,27 @@ function downloadPDF() {
         fontSize: 7,
         lineColor: [0, 0, 0],
         lineWidth: 0.5,
+        halign: "center",
+        valign: "middle",
+        minCellHeight: 60,
       },
-      alternateRowStyles: {
-        fillColor: false,
+      didDrawCell: (data) => {
+        if (data.section === "head") {
+          const { doc, cell } = data;
+          const x = cell.x + cell.width / 2;
+          const y = cell.y + cell.height - 4;
+          doc.saveGraphicsState();
+          doc.text(cell.raw, x, y, {
+            angle: 90,
+            align: "left",
+          });
+          doc.restoreGraphicsState();
+        }
+      },
+      didParseCell: (data) => {
+        if (data.section === "head") {
+          data.cell.text = []; // suppress default header text, we draw it manually
+        }
       },
       tableLineColor: [0, 0, 0],
       tableLineWidth: 0.5,
@@ -263,7 +283,7 @@ function downloadPDF() {
                   <thead>
                     <tr>
                       {Object.keys(result.previewRows[0]).map((col) => (
-                        <th key={col}>{col}</th>
+                        <th key={col}><span>{col}</span></th>
                       ))}
                     </tr>
                   </thead>

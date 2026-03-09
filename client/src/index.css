@@ -216,12 +216,23 @@ body {
 .preview-table th {
   background: #ffffff;
   color: #000000;
-  padding: 6px 10px;
-  text-align: left;
+  padding: 6px 4px;
+  text-align: center;
+  vertical-align: bottom;
   border: 1px solid #000000;
   font-weight: bold;
   font-family: Arial, sans-serif;
   font-size: 12px;
+  white-space: nowrap;
+  height: 120px;
+}
+
+.preview-table th span {
+  display: inline-block;
+  transform: rotate(-90deg);
+  transform-origin: center center;
+  white-space: nowrap;
+  width: 16px;
 }
 
 .preview-table td {
@@ -232,6 +243,8 @@ body {
   font-family: Arial, sans-serif;
   font-size: 12px;
   text-transform: uppercase;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .preview-table tbody tr:last-child td {

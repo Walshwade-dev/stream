@@ -210,29 +210,35 @@ body {
   border-collapse: collapse;
   font-size: 12px;
   font-family: Arial, sans-serif;
-  white-space: nowrap;
+  table-layout: fixed;
 }
 
 .preview-table th {
   background: #ffffff;
   color: #000000;
-  padding: 6px 4px;
+  padding: 4px 2px;
   text-align: center;
   vertical-align: bottom;
   border: 1px solid #000000;
   font-weight: bold;
   font-family: Arial, sans-serif;
   font-size: 12px;
-  white-space: nowrap;
-  height: 120px;
+  width: 60px;
+  min-width: 60px;
+  max-width: 60px;
+  height: 100px;
+  overflow: hidden;
 }
 
 .preview-table th span {
   display: inline-block;
   transform: rotate(-90deg);
   transform-origin: center center;
-  white-space: nowrap;
-  width: 16px;
+  white-space: normal;
+  word-break: break-word;
+  width: 90px;
+  font-size: 11px;
+  line-height: 1.2;
 }
 
 .preview-table td {

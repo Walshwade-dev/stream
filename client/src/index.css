@@ -227,7 +227,6 @@ body {
   min-width: 60px;
   max-width: 60px;
   height: 100px;
-  line-height: 1.2;
   overflow: hidden;
 }
 
@@ -235,7 +234,7 @@ body {
   display: block;
   writing-mode: vertical-rl;
   transform: rotate(-90deg);
-  white-space: normal;
+  white-space: wrap;
   word-break: break-word;
   text-align: center;
   font-size: 11px;

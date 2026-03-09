@@ -218,7 +218,7 @@ body {
   color: #000000;
   padding: 4px 2px;
   text-align: center;
-  /*vertical-align: bottom;*/
+  vertical-align: bottom;
   border: 1px solid #000000;
   font-weight: bold;
   font-family: Arial, sans-serif;
@@ -241,7 +241,7 @@ body {
   line-height: 1.2;
 }
 
-.preview-table td {
+.preview-table tbody td {
   color: #000000;
   background: #ffffff;
   border: 1px solid #000000;
@@ -259,7 +259,7 @@ body {
   padding: 0;
 }
 
-.preview-table td span {
+.preview-table tbody td span {
   position: absolute;
   top: 0;
   left: 0;
@@ -275,7 +275,6 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 
 
 

@@ -24,30 +24,30 @@ export default function App() {
   const NUMBER_COLUMNS = ["weighofload", "Authweight"];
 
 
-  const PDF_COLUMNS = [
-    { key: "Inspection Date",  label: "Inspection Date" },
-    { key: "registration",     label: "Registration" },
-    { key: "Transp",           label: "Transporter" },
-    { key: "Model",            label: "Model" },
-    { key: "Origin",           label: "Origin" },
-    { key: "destination",      label: "Destination" },
-    { key: "Axleconf",         label: "Axleconf" },
-    { key: "Inspstick",        label: "Inspsticker" },
-    { key: "InsuaranceStic",   label: "InsuSticker" },
-    { key: "Cargo",            label: "Cargo" },
-    { key: "Dpermitissu",      label: "Permit Issue Date" },
-    { key: "Height",           label: "Height" },
-    { key: "Length",           label: "Length_" },
-    { key: "Width",            label: "Width_" },
-    { key: "AbnormalLPermit",  label: "Abnormal Load Permit" },
-    { key: "Totaltyres",       label: "Total Tyres" },
-    { key: "weighofload",      label: "Load Weight" },
-    { key: "Authweight",       label: "Authorized Weight" },
-    { key: "Permit No.",       label: "Permit No." },
-    { key: "Date of Travel",   label: "Date of Travel" },
-    { key: "Start Date",       label: "PStartD" },
-    { key: "End Date",         label: "PEndD" },
-  ];
+const PDF_COLUMNS = [
+  { key: "Inspection Date",  label: "Inspection\nDate" },
+  { key: "registration",     label: "Registration" },
+  { key: "Transp",           label: "Transporter" },
+  { key: "Model",            label: "Model" },
+  { key: "Origin",           label: "Origin" },
+  { key: "destination",      label: "Destination" },
+  { key: "Axleconf",         label: "Axleconf" },
+  { key: "Inspstick",        label: "Inspsticker" },
+  { key: "InsuaranceStic",   label: "InsuSticker" },
+  { key: "Cargo",            label: "Cargo" },
+  { key: "Dpermitissu",      label: "Permit Issue\nDate" },
+  { key: "Height",           label: "Height" },
+  { key: "Length",           label: "Length_" },
+  { key: "Width",            label: "Width_" },
+  { key: "AbnormalLPermit",  label: "Abnormal\nLoad Permit" },
+  { key: "Totaltyres",       label: "Total Tyres" },
+  { key: "weighofload",      label: "Load Weight" },
+  { key: "Authweight",       label: "Authorized\nWeight" },
+  { key: "Permit No.",       label: "Permit No." },
+  { key: "Date of Travel",   label: "Date of\nTravel" },
+  { key: "Start Date",       label: "PStartD" },
+  { key: "End Date",         label: "PEndD" },
+];
 
 
 function downloadPDF() {
@@ -282,9 +282,19 @@ function downloadPDF() {
                 <table className="preview-table">
                   <thead>
                     <tr>
-                      {Object.keys(result.previewRows[0]).map((col) => (
-                        <th key={col}><span>{col}</span></th>
-                      ))}
+                      {Object.keys(result.previewRows[0]).map((col) => {
+                        const match = PDF_COLUMNS.find((c) => c.key === col);
+                        const label = match ? match.label : col;
+                        return (
+                          <th key={col}>
+                            <span>
+                              {label.split("\n").map((line, i) => (
+                                <span key={i} style={{ display: "block" }}>{line}</span>
+                              ))}
+                            </span>
+                          </th>
+                        );
+                      })}
                     </tr>
                   </thead>
                   <tbody>

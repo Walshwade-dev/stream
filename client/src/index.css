@@ -242,31 +242,36 @@ body {
 }
 
 .preview-table td {
-  color: #000000;
+   color: #000000;
   background: #ffffff;
-  padding: 4px 2px;
+  padding: 0;
   border: 1px solid #000000;
   font-family: Arial, sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   text-transform: uppercase;
   text-align: center;
-  vertical-align: bottom;
+  vertical-align: middle;
   width: 60px;
   min-width: 60px;
   max-width: 60px;
-  height: 80px;
+  height: 100px;
   overflow: hidden;
+  position: relative;
 }
 
 .preview-table td span {
-  display: inline-block;
-  transform: rotate(-90deg);
-  transform-origin: center center;
-  white-space: normal;
-  word-break: break-word;
-  width: 70px;
-  font-size: 11px;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  white-space: nowrap;
+  width: 90px;
+  text-align: center;
+  font-size: 10px;
   line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .preview-table tbody tr:last-child td {

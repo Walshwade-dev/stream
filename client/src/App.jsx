@@ -155,18 +155,18 @@ export default function App() {
                 <span className="result-val">{result.total_rows?.toLocaleString()}</span>
               </div>
 
-              {result.preview?.length > 0 && (
+              {result.previewRows?.length > 0 && (
                 <div className="table-wrapper">
                   <table className="preview-table">
                     <thead>
                       <tr>
-                        {Object.keys(result.preview[0]).map((col) => (
+                        {Object.keys(result.previewRows[0]).map((col) => (
                           <th key={col}>{col}</th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
-                      {result.preview.map((row, i) => (
+                      {result.previewRows.map((row, i) => (
                         <tr key={i}>
                           {Object.values(row).map((val, j) => (
                             <td key={j}>{val}</td>

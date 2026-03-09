@@ -10,6 +10,14 @@ export default function App() {
   const [errorMsg, setErrorMsg] = useState("");
   const inputRef = useRef(null);
 
+  const DATE_COLUMNS = [
+  "Inspection Date",
+  "Date of Travel",
+  "Start Date",
+  "End Date",
+  "Dpermitissu",
+];
+
   function validateFile(f) {
     const ext = f.name.split(".").pop().toLowerCase();
     return ["csv", "xlsx", "xls"].includes(ext);
@@ -33,6 +41,15 @@ export default function App() {
     setDragOver(false);
     pickFile(e.dataTransfer.files[0]);
   }
+
+  function formatCell(col, val) {
+  if (!val) return val;
+  if (DATE_COLUMNS.includes(col)) {
+    const d = new Date(val);
+    if (!isNaN(d)) return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+  }
+  return val;
+}
 
   async function upload() {
   if (!file) return;
@@ -168,8 +185,8 @@ export default function App() {
                     <tbody>
                       {result.previewRows.map((row, i) => (
                         <tr key={i}>
-                          {Object.values(row).map((val, j) => (
-                            <td key={j}>{val}</td>
+                          {Object.entries(row).map(([col, val], j) => (
+                            <td key={j}>{formatCell(col, val)}</td>
                           ))}
                         </tr>
                       ))}

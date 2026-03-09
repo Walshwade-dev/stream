@@ -218,7 +218,7 @@ body {
   color: #000000;
   padding: 4px 2px;
   text-align: center;
-  vertical-align: bottom;
+  /*vertical-align: bottom;*/
   border: 1px solid #000000;
   font-weight: bold;
   font-family: Arial, sans-serif;
@@ -232,7 +232,6 @@ body {
 
 .preview-table th span {
   display: inline-block;
-  /*transform: rotate(-90deg);*/
   transform: rotate(-90deg);
   transform-origin: center center;
   white-space: normal;
@@ -271,7 +270,7 @@ body {
   justify-content: center;
   transform-origin: 30px 30px;
   transform: rotate(-90deg) translateX(-20px);
-  white-space: nowrap;
+  white-space: wrap;
   font-size: 10px;
   overflow: hidden;
   text-overflow: ellipsis;

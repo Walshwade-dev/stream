@@ -244,13 +244,29 @@ body {
 .preview-table td {
   color: #000000;
   background: #ffffff;
-  padding: 5px 10px;
+  padding: 4px 2px;
   border: 1px solid #000000;
   font-family: Arial, sans-serif;
   font-size: 12px;
   text-transform: uppercase;
   text-align: center;
   vertical-align: middle;
+  width: 60px;
+  min-width: 60px;
+  max-width: 60px;
+  height: 80px;
+  overflow: hidden;
+}
+
+.preview-table td span {
+  display: inline-block;
+  transform: rotate(-90deg);
+  transform-origin: center center;
+  white-space: normal;
+  word-break: break-word;
+  width: 70px;
+  font-size: 11px;
+  line-height: 1.2;
 }
 
 .preview-table tbody tr:last-child td {

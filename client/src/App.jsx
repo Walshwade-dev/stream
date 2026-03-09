@@ -301,7 +301,9 @@ function downloadPDF() {
                     {result.previewRows.map((row, i) => (
                       <tr key={i}>
                         {Object.entries(row).map(([col, val], j) => (
-                          <td key={j}>{formatCell(col, val)}</td>
+                          <td key={j}>
+                            <span>{formatCell(col, val)}</span>
+                          </td>
                         ))}
                       </tr>
                     ))}

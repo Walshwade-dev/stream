@@ -1,5 +1,4 @@
 import { useState, useRef } from "react";
-import "./index.css";
 
 const SERVER = "https://stream-production-748d.up.railway.app";
 

@@ -20,15 +20,6 @@ body {
   background: #fff9f9;
   border: 1px solid #cefdff;
   border-radius: 12px;
-  width: 480px;
-  overflow: hidden;
-  box-shadow: 0 24px 64px rgba(155, 155, 155, 0.6);
-}
-
-.card {
-  background: #fff9f9;
-  border: 1px solid #cefdff;
-  border-radius: 12px;
   width: 90vw;
   max-width: 1200px;
   overflow: hidden;

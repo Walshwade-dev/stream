@@ -233,7 +233,7 @@ body {
 .preview-table th span {
   display: block;
   writing-mode: vertical-rl;
-  transform: rotate(-180deg);
+  transform: rotate(-90deg);
   white-space: normal;
   word-break: break-word;
   text-align: center;
@@ -269,7 +269,6 @@ body {
   font-size: 10px;
   line-height: 1.2;
   overflow: hidden;
-  text-overflow: ellipsis;
   margin: 0 auto;
   max-height: 98px;
 }

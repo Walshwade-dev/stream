@@ -60,6 +60,7 @@ export default function App() {
       return;
     }
     setResult(data);
+    console.log("Server response:", data);
     setStatus("success");
   } catch (err) {
     setErrorMsg(err.message);

@@ -203,6 +203,9 @@ body {
   color: #ccc;
   padding: 6px 12px;
   border-bottom: 1px solid #1e1e1e;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  text-transform: uppercase;
 }
 
 .preview-table tbody tr:last-child td {

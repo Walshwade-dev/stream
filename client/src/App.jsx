@@ -54,7 +54,7 @@ export default function App() {
       const n = Math.round(Number(val));
       if (!isNaN(n)) return n.toLocaleString();
     }
-    return val;
+    return String(val).toUpperCase();
   }
 
   async function upload() {

@@ -141,12 +141,44 @@ export default function App() {
         </button>
 
         {status === "success" && result && (
-          <div className="result">
-            <div className="result-row"><span className="result-label">status</span><span className="result-ok">✓ received</span></div>
-            <div className="result-row"><span className="result-label">filename</span><span className="result-val">{result.filename}</span></div>
-            <div className="result-row"><span className="result-label">total rows</span><span className="result-val">{result.total_rows?.toLocaleString()}</span></div>
-          </div>
-        )}
+            <div className="result">
+              <div className="result-row">
+                <span className="result-label">status</span>
+                <span className="result-ok">✓ received</span>
+              </div>
+              <div className="result-row">
+                <span className="result-label">filename</span>
+                <span className="result-val">{result.filename}</span>
+              </div>
+              <div className="result-row">
+                <span className="result-label">total rows</span>
+                <span className="result-val">{result.total_rows?.toLocaleString()}</span>
+              </div>
+
+              {result.preview?.length > 0 && (
+                <div className="table-wrapper">
+                  <table className="preview-table">
+                    <thead>
+                      <tr>
+                        {Object.keys(result.preview[0]).map((col) => (
+                          <th key={col}>{col}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {result.preview.map((row, i) => (
+                        <tr key={i}>
+                          {Object.values(row).map((val, j) => (
+                            <td key={j}>{val}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
 
       </div>
     </div>

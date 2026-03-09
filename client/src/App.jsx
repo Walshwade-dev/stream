@@ -1,5 +1,8 @@
 import { useState, useRef } from "react";
 
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
 const SERVER = "https://stream-production-748d.up.railway.app";
 
 export default function App() {
@@ -19,6 +22,65 @@ export default function App() {
   ];
 
   const NUMBER_COLUMNS = ["weighofload", "Authweight"];
+
+
+  const PDF_COLUMNS = [
+    { key: "Inspection Date",  label: "Inspection Date" },
+    { key: "registration",     label: "Registration" },
+    { key: "Transp",           label: "Transporter" },
+    { key: "Model",            label: "Model" },
+    { key: "Origin",           label: "Origin" },
+    { key: "destination",      label: "Destination" },
+    { key: "Axleconf",         label: "Axleconf" },
+    { key: "Inspstick",        label: "Inspsticker" },
+    { key: "InsuaranceStic",   label: "InsuSticker" },
+    { key: "Cargo",            label: "Cargo" },
+    { key: "Dpermitissu",      label: "Permit Issue Date" },
+    { key: "Height",           label: "Height" },
+    { key: "Length",           label: "Length_" },
+    { key: "Width",            label: "Width_" },
+    { key: "AbnormalLPermit",  label: "Abnormal Load Permit" },
+    { key: "Totaltyres",       label: "Total Tyres" },
+    { key: "weighofload",      label: "Load Weight" },
+    { key: "Authweight",       label: "Authorized Weight" },
+    { key: "Permit No.",       label: "Permit No." },
+    { key: "Date of Travel",   label: "Date of Travel" },
+    { key: "Start Date",       label: "PStartD" },
+    { key: "End Date",         label: "PEndD" },
+  ];
+
+
+  function downloadPDF() {
+    const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a3" });
+
+    const headers = PDF_COLUMNS.map((c) => c.label);
+
+    const rows = result.previewRows.map((row) =>
+      PDF_COLUMNS.map((c) => formatCell(c.key, row[c.key]) ?? "")
+    );
+
+    autoTable(doc, {
+      head: [headers],
+      body: rows,
+      styles: {
+        font: "helvetica",
+        fontSize: 7,
+        cellPadding: 3,
+      },
+      headStyles: {
+        fillColor: [30, 30, 30],
+        textColor: [74, 222, 128],
+        fontStyle: "bold",
+        fontSize: 7,
+      },
+      alternateRowStyles: {
+        fillColor: [245, 245, 245],
+      },
+      margin: { top: 30, left: 20, right: 20 },
+    });
+
+    doc.save(`${result.filename.replace(/\.[^/.]+$/, "")}_report.pdf`);
+  }
 
   function validateFile(f) {
     const ext = f.name.split(".").pop().toLowerCase();
@@ -161,6 +223,10 @@ export default function App() {
           disabled={!file || status === "uploading"}
         >
           {status === "uploading" ? "↻ Uploading…" : "Upload"}
+        </button>
+
+        <button className="download-btn" onClick={downloadPDF}>
+          ↓ Download PDF
         </button>
 
         {status === "success" && result && (

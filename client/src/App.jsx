@@ -4,6 +4,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 const SERVER = "https://stream-production-748d.up.railway.app";
+// const SERVER = "http://localhost:5000";
 
 export default function App() {
   const [file, setFile] = useState(null);
@@ -287,11 +288,7 @@ function downloadPDF() {
                         const label = match ? match.label : col;
                         return (
                           <th key={col}>
-                            <span>
-                              {label.split("\n").map((line, i) => (
-                                <span key={i} style={{ display: "block" }}>{line}</span>
-                              ))}
-                            </span>
+                            <span>{label}</span>
                           </th>
                         );
                       })}

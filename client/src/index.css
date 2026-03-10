@@ -233,13 +233,13 @@ body {
 .preview-table th span {
   display: block;
   writing-mode: vertical-rl;
-  transform: rotate(-90deg);
-  white-space: wrap;
-  word-break: break-word;
-  text-align: center;
+  transform: rotate(180deg);
+  white-space: pre;        /* ✅ respects \n as real line breaks */
+  text-align: left;
   font-size: 11px;
-  line-height: 1.2;
+  line-height: 1.4;
   margin: 0 auto;
+  word-break: normal;
 }
 
 .preview-table tbody tr td {
@@ -264,7 +264,7 @@ body {
   display: block;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
-  white-space: wrap;
+  white-space: normal;
   text-align: center;
   font-size: 10px;
   line-height: 1.2;

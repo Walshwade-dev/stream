@@ -38,10 +38,13 @@ const REQUIRED_COLUMNS = [
 // Strip excluded columns from every row
 const EXCLUDE_COLUMNS = ["No", "status", "Weighbridge Station Bound"];
 
+// ✅ Replace stripColumns with a whitelist approach
 function stripColumns(rows) {
   return rows.map((row) => {
-    const clean = { ...row };
-    EXCLUDE_COLUMNS.forEach((col) => delete clean[col]);
+    const clean = {};
+    REQUIRED_COLUMNS.forEach((col) => {
+      clean[col] = row[col] ?? "";  // only keep columns we know about
+    });
     return clean;
   });
 }
@@ -84,7 +87,17 @@ function parseFile(file) {
   const workbook = xlsx.read(buffer, { type: "buffer" });
   const sheetName = workbook.SheetNames[0];
   const sheet = workbook.Sheets[sheetName];
-  return xlsx.utils.sheet_to_json(sheet, { defval: "" });
+  const raw =  xlsx.utils.sheet_to_json(sheet, { defval: "" });
+
+  return raw.map((row) => {
+      const clean = {};
+      Object.entries(row).forEach(([key, val]) => {
+        if (key && key.trim() !== "") {  // ← skip blank column headers
+          clean[key] = val;
+        }
+      });
+      return clean;
+    });
 }
 
 // Check all required columns exist
@@ -140,6 +153,7 @@ app.post("/upload", upload.single("file"), (req, res) => {
     filename: req.file.originalname,
     total_rows: rows.length,
     previewRows,
+    allRows: cleaned, //send all rows to client
   });
 });
 

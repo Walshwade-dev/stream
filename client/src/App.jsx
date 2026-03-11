@@ -4,7 +4,6 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 const SERVER = "https://stream-production-748d.up.railway.app";
-//const SERVER = "http://localhost:5000";
 
 export default function App() {
   const [file, setFile] = useState(null);

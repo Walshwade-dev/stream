@@ -157,4 +157,88 @@ app.post("/upload", upload.single("file"), (req, res) => {
   });
 });
 
+// ── Impounded & Prohibited section ──────────────────────────
+
+const IMPOUNDED_REQUIRED_COLUMNS = [
+  "DateWeighed",
+  "Transporter",
+  "VehicleReg",
+  "AxleConfig",
+  "Cargo",
+  "Source",
+  "Destination",
+  "AxleOverload",
+  "GVWOverload",
+  "ProhibitionOrder",
+  "Prosecutor",
+  "ComputerOperator",
+];
+
+// columns to drop from impounded data
+const IMPOUNDED_DROP_COLUMNS = [
+  "No.",
+  "DateProhibited",
+  "TimeTaken",
+  "TicketNo",
+  "Status",
+];
+
+function stripImpoundedColumns(rows) {
+  return rows.map((row) => {
+    const clean = {};
+    IMPOUNDED_REQUIRED_COLUMNS.forEach((col) => {
+      clean[col] = row[col] ?? "";
+    });
+    return clean;
+  });
+}
+
+function validateImpoundedColumns(rows) {
+  if (!rows.length) throw new Error("File is empty — no rows found.");
+  const fileColumns = Object.keys(rows[0]);
+  const missing = IMPOUNDED_REQUIRED_COLUMNS.filter(
+    (col) => !fileColumns.includes(col)
+  );
+  if (missing.length) {
+    const error = new Error("Missing required columns");
+    error.missing = missing;
+    throw error;
+  }
+}
+
+app.post("/upload/impounded", upload.single("file"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, error: "No file uploaded" });
+  }
+
+  let rows;
+
+  try {
+    rows = parseFile(req.file);
+  } catch (err) {
+    return res.status(422).json({ success: false, error: err.message });
+  }
+
+  try {
+    validateImpoundedColumns(rows);
+  } catch (err) {
+    return res.status(422).json({
+      success: false,
+      error: err.message,
+      ...(err.missing && { missing_columns: err.missing }),
+    });
+  }
+
+  const cleaned = stripImpoundedColumns(rows);
+  const previewRows = cleaned.slice(0, 10);
+
+  return res.json({
+    success: true,
+    filename: req.file.originalname,
+    total_rows: rows.length,
+    previewRows,
+    allRows: cleaned,
+  });
+});
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

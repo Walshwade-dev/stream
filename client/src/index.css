@@ -271,7 +271,7 @@ body {
   display: block;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
-  white-space: wrap;
+  white-space: normal;
   text-align: center;
   font-size: 10px;
   line-height: 1.2;

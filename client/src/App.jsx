@@ -1,10 +1,9 @@
 import { useState, useCallback } from "react";
 
-import { SECTIONS } from "./config/sections";
-import { generatePDF } from "./utils/generatePDF";
-import { generateImpoundedPDF } from "./utils/generateImpoundedPDF";
-import { Sidebar } from "./components/Sidebar";
-import { UploadSection } from "./components/UploadSection";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
+const SERVER = "https://stream-production-748d.up.railway.app";
 
 export default function App() {
   const [sectionStates, setSectionStates] = useState(

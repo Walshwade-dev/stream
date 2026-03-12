@@ -1,23 +1,11 @@
 import { useCallback } from "react";
 import { useHswimUpload } from "../hooks/useHswimUpload.js";
-import { HOURLY_COLUMNS, GRAPH_COLUMNS, SUMMARY_FIELDS, CENSUS_FIELDS } from "../config/hswimColumns.js";
+import { GRAPH_COLUMNS, SUMMARY_FIELDS, CENSUS_FIELDS } from "../config/hswimColumns.js";
 
 function Dropzone({ label, sublabel, file, onDrop, onClear, busy }) {
-  const handleDrag = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  }, []);
-
-  const handleDrop = useCallback((e) => {
-    e.preventDefault();
-    const f = e.dataTransfer.files[0];
-    if (f) onDrop(f);
-  }, [onDrop]);
-
-  const handleChange = useCallback((e) => {
-    const f = e.target.files[0];
-    if (f) onDrop(f);
-  }, [onDrop]);
+  const handleDrag = useCallback((e) => { e.preventDefault(); e.stopPropagation(); }, []);
+  const handleDrop = useCallback((e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) onDrop(f); }, [onDrop]);
+  const handleChange = useCallback((e) => { const f = e.target.files[0]; if (f) onDrop(f); }, [onDrop]);
 
   if (file) {
     return (
@@ -28,9 +16,7 @@ function Dropzone({ label, sublabel, file, onDrop, onClear, busy }) {
             <div className="file-name">{file.name}</div>
             <div className="file-meta">{(file.size / 1024).toFixed(1)} KB</div>
           </div>
-          {!busy && (
-            <button className="clear-btn" onClick={onClear}>×</button>
-          )}
+          {!busy && <button className="clear-btn" onClick={onClear}>×</button>}
         </div>
       </div>
     );
@@ -62,14 +48,7 @@ function Dropzone({ label, sublabel, file, onDrop, onClear, busy }) {
 function ManualField({ label, fieldKey, value, onChange, type = "number", placeholder = "0" }) {
   return (
     <div style={{ marginBottom: 10 }}>
-      <label style={{
-        display: "block",
-        color: "#94a3b8",
-        fontSize: 10,
-        letterSpacing: "0.08em",
-        marginBottom: 4,
-        textTransform: "uppercase",
-      }}>
+      <label style={{ display: "block", color: "#94a3b8", fontSize: 10, letterSpacing: "0.08em", marginBottom: 4, textTransform: "uppercase" }}>
         {label}
       </label>
       <input
@@ -77,17 +56,7 @@ function ManualField({ label, fieldKey, value, onChange, type = "number", placeh
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(fieldKey, e.target.value)}
-        style={{
-          width: "100%",
-          background: "#0f172a",
-          border: "1px solid #1e293b",
-          borderRadius: 4,
-          padding: "6px 10px",
-          color: "#e2e8f0",
-          fontSize: 12,
-          fontFamily: "inherit",
-          outline: "none",
-        }}
+        style={{ width: "100%", background: "#0f172a", border: "1px solid #1e293b", borderRadius: 4, padding: "6px 10px", color: "#e2e8f0", fontSize: 12, fontFamily: "inherit", outline: "none" }}
         onFocus={e => e.target.style.borderColor = "#4ade80"}
         onBlur={e => e.target.style.borderColor = "#1e293b"}
       />
@@ -95,34 +64,97 @@ function ManualField({ label, fieldKey, value, onChange, type = "number", placeh
   );
 }
 
-function HourlyTable({ rows }) {
+function HourlyTable({ rows, date }) {
   if (!rows?.length) return null;
+
+  const numKeys = ["D","S","M","H","Q","X","C","Y","P","A","Z","G","R","E"];
+  const totals = {};
+  numKeys.forEach(k => { totals[k] = rows.reduce((s, r) => s + (r[k] || 0), 0); });
+
+  const thBase = {
+    background: "#fff", color: "#000", border: "1px solid #000",
+    textAlign: "center", fontFamily: "Arial, sans-serif", fontWeight: "bold", fontSize: 10,
+  };
+  const thRot = { ...thBase, width: 42, minWidth: 42, maxWidth: 42, height: 90, overflow: "hidden", padding: 0, verticalAlign: "bottom" };
+  const thWide = { ...thBase, width: 70, minWidth: 70, padding: "4px 2px", verticalAlign: "middle" };
+  const td = { background: "#fff", color: "#000", border: "1px solid #000", textAlign: "center", fontFamily: "Arial, sans-serif", fontSize: 10, padding: "2px 1px", whiteSpace: "nowrap" };
+  const tdBold = { ...td, fontWeight: "bold" };
+
+  const rot = (text) => (
+    <span style={{ display: "block", writingMode: "vertical-rl", transform: "rotate(180deg)", whiteSpace: "pre", fontSize: 10, lineHeight: 1.3, textAlign: "left", margin: "0 auto" }}>
+      {text}
+    </span>
+  );
+
   return (
     <div style={{ marginBottom: 16 }}>
       <div style={{ color: "#94a3b8", fontSize: 10, letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>
         Hourly Data Preview
       </div>
       <div className="table-wrapper">
-        <table className="preview-table rotated">
+        <table style={{ borderCollapse: "collapse", tableLayout: "fixed", fontFamily: "Arial, sans-serif" }}>
           <thead>
+            {/* Row 1: group labels */}
             <tr>
-              {HOURLY_COLUMNS.map(col => (
-                <th key={col.key}>
-                  <span>{col.label}</span>
-                </th>
-              ))}
+              <th rowSpan={3} style={thWide}>DATE</th>
+              <th rowSpan={3} style={thWide}>TIME</th>
+              <th colSpan={6} style={{ ...thBase, padding: "4px 2px" }}>TRUCKS WEIGHED</th>
+              <th rowSpan={3} style={thRot}>{rot("CALLED\nIN")}</th>
+              <th rowSpan={3} style={thRot}>{rot("TOTAL\nOVERLO\nADED")}</th>
+              <th rowSpan={3} style={thRot}>{rot("IMPOUNDED\n& PROHIB-\nITED")}</th>
+              <th rowSpan={3} style={thRot}>{rot("WARNED\nTRUCKS")}</th>
+              <th rowSpan={3} style={thRot}>{rot("CHARGED &\nPROHIBITED")}</th>
+              <th rowSpan={3} style={thRot}>{rot("SPECIAL\nRELEASE")}</th>
+              <th rowSpan={3} style={thRot}>{rot("REDISTRI-\nBUTED")}</th>
+              <th rowSpan={3} style={thRot}>{rot("EXEMPTION\nPERMITS\nNOT\nWEIGHED")}</th>
+            </tr>
+            {/* Row 2: sub-column names */}
+            <tr>
+              <th style={thRot}>{rot("MULTIDECK\nSCALE")}</th>
+              <th style={thRot}>{rot("WEIGHED\nSAW")}</th>
+              <th style={thRot}>{rot("MANUAL\nLY")}</th>
+              <th style={thRot}>{rot("HSWIM\nTOTAL")}</th>
+              <th style={thRot}>{rot("HSWIM –\nCLEARED")}</th>
+              <th style={thRot}>{rot("TOTAL\nWEIGHED")}</th>
+            </tr>
+            {/* Row 3: key labels */}
+            <tr>
+              <th style={thRot}>{rot("(D)")}</th>
+              <th style={thRot}>{rot("(S)")}</th>
+              <th style={thRot}>{rot("(M)")}</th>
+              <th style={thRot}>{rot("(H)")}</th>
+              <th style={thRot}>{rot("Q = H-C")}</th>
+              <th style={thRot}>{rot("X=(D\n+M+S)")}</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row, i) => (
               <tr key={i}>
-                {HOURLY_COLUMNS.map(col => (
-                  <td key={col.key}>
-                    <span>{row[col.key] ?? ""}</span>
-                  </td>
-                ))}
+                <td style={td}>{i === 0 ? (date || "") : ""}</td>
+                <td style={td}>{row.time}</td>
+                <td style={td}>{row.D}</td>
+                <td style={td}>{row.S}</td>
+                <td style={td}>{row.M}</td>
+                <td style={td}>{row.H}</td>
+                <td style={td}>{row.Q}</td>
+                <td style={td}>{row.X}</td>
+                <td style={td}>{row.C}</td>
+                <td style={td}>{row.Y}</td>
+                <td style={td}>{row.P}</td>
+                <td style={td}>{row.A}</td>
+                <td style={td}>{row.Z}</td>
+                <td style={td}>{row.G}</td>
+                <td style={td}>{row.R}</td>
+                <td style={td}>{row.E}</td>
               </tr>
             ))}
+            <tr>
+              <td style={tdBold}>Totals</td>
+              <td style={td}></td>
+              {["D","S","M","H","Q","X","C","Y","P","A","Z","G","R","E"].map(k => (
+                <td key={k} style={tdBold}>{totals[k]}</td>
+              ))}
+            </tr>
           </tbody>
         </table>
       </div>
@@ -142,9 +174,7 @@ function GraphTable({ rows }) {
           <thead>
             <tr>
               {GRAPH_COLUMNS.map(col => (
-                <th key={col.key} className="th-horizontal">
-                  <span>{col.label}</span>
-                </th>
+                <th key={col.key} className="th-horizontal"><span>{col.label}</span></th>
               ))}
             </tr>
           </thead>
@@ -152,9 +182,7 @@ function GraphTable({ rows }) {
             {rows.map((row, i) => (
               <tr key={i}>
                 {GRAPH_COLUMNS.map(col => (
-                  <td key={col.key} className="td-horizontal">
-                    <span>{row[col.key] ?? ""}</span>
-                  </td>
+                  <td key={col.key} className="td-horizontal"><span>{row[col.key] ?? ""}</span></td>
                 ))}
               </tr>
             ))}
@@ -168,13 +196,12 @@ function GraphTable({ rows }) {
 function SummaryTable({ summary, census, F }) {
   if (!summary) return null;
   const mergedSummary = { ...summary, F: F ?? 0 };
-  const mergedCensus = { ...census, K: (Number(census?.buses)||0)+(Number(census?.veh3500to7000)||0)+(Number(census?.veh7000plus)||0) };
+  const K = (Number(census?.buses)||0) + (Number(census?.veh3500to7000)||0) + (Number(census?.veh7000plus)||0);
+  const mergedCensus = { ...census, K };
 
   return (
     <div style={{ marginBottom: 16 }}>
-      <div style={{ color: "#94a3b8", fontSize: 10, letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>
-        Daily Summary
-      </div>
+      <div style={{ color: "#94a3b8", fontSize: 10, letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>Daily Summary</div>
       <div className="result">
         {SUMMARY_FIELDS.map(f => (
           <div className="result-row" key={f.key}>
@@ -183,10 +210,7 @@ function SummaryTable({ summary, census, F }) {
           </div>
         ))}
       </div>
-
-      <div style={{ color: "#94a3b8", fontSize: 10, letterSpacing: "0.08em", margin: "12px 0 6px", textTransform: "uppercase" }}>
-        Traffic Census
-      </div>
+      <div style={{ color: "#94a3b8", fontSize: 10, letterSpacing: "0.08em", margin: "12px 0 6px", textTransform: "uppercase" }}>Traffic Census</div>
       <div className="result">
         {CENSUS_FIELDS.map(f => (
           <div className="result-row" key={f.key}>
@@ -212,9 +236,7 @@ export default function HswimSection({ section, onStatusChange }) {
 
   const handleGenerate = async () => {
     const report = await buildFinalReport();
-    if (report) {
-      onStatusChange(section.id, "success", { reportData: report, ready: true });
-    }
+    if (report) onStatusChange(section.id, "success", { reportData: report, ready: true });
   };
 
   const hasHswim = !!hswimResult;
@@ -223,41 +245,25 @@ export default function HswimSection({ section, onStatusChange }) {
   return (
     <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
 
-      {/* ── LEFT: uploads + previews ───────────────────── */}
+      {/* ── LEFT ───────────────────────────────────────── */}
       <div style={{ flex: 1, minWidth: 0 }}>
 
-        {/* HSWIM Daily Upload */}
         <div className="section-card">
           <div className="section-header">
             <span className="section-title">HSWIM DAILY STATISTICS</span>
             {hasHswim && <span className="section-badge">✓ {hswimResult.totalRows} ROWS</span>}
             {busy && !hasHswim && <span className="section-badge section-badge-busy">UPLOADING…</span>}
           </div>
-          <Dropzone
-            label="Drop HSWIM Daily CSV / XLSX"
-            sublabel=".csv or .xlsx · 24 hourly rows"
-            file={hswimFile}
-            onDrop={uploadHswim}
-            onClear={clearHswim}
-            busy={busy}
-          />
+          <Dropzone label="Drop HSWIM Daily CSV / XLSX" sublabel=".csv or .xlsx · 24 hourly rows" file={hswimFile} onDrop={uploadHswim} onClear={clearHswim} busy={busy} />
         </div>
 
-        {/* Impounded Upload */}
         <div className="section-card">
           <div className="section-header">
             <span className="section-title">IMPOUNDED & OVERLOADED</span>
             {hasImpounded && <span className="section-badge">✓ F = {impoundedResult.F}</span>}
             {busy && !hasImpounded && <span className="section-badge section-badge-busy">UPLOADING…</span>}
           </div>
-          <Dropzone
-            label="Drop Impounded & Overloaded CSV / XLSX"
-            sublabel=".csv or .xlsx · Vardict column required"
-            file={impoundedFile}
-            onDrop={uploadImpounded}
-            onClear={clearImpounded}
-            busy={busy}
-          />
+          <Dropzone label="Drop Impounded & Overloaded CSV / XLSX" sublabel=".csv or .xlsx · Vardict column required" file={impoundedFile} onDrop={uploadImpounded} onClear={clearImpounded} busy={busy} />
           {hasImpounded && (
             <div className="result" style={{ margin: "0 24px 16px" }}>
               <div className="result-row">
@@ -272,67 +278,37 @@ export default function HswimSection({ section, onStatusChange }) {
           )}
         </div>
 
-        {/* Error */}
         {error && <div className="error">⚠ {error}</div>}
 
-        {/* Preview tables */}
         {hasHswim && (
           <div style={{ margin: "0 0 16px" }}>
-            <HourlyTable rows={hswimResult.reportData?.hourlyRows} />
+            <HourlyTable rows={hswimResult.reportData?.hourlyRows} date={manualFields.date} />
             <GraphTable rows={hswimResult.reportData?.graphRows} />
-            <SummaryTable
-              summary={hswimResult.reportData?.summary}
-              census={hswimResult.reportData?.census}
-              F={impoundedResult?.F}
-            />
+            <SummaryTable summary={hswimResult.reportData?.summary} census={hswimResult.reportData?.census} F={impoundedResult?.F} />
           </div>
         )}
       </div>
 
-      {/* ── RIGHT: manual fields panel ─────────────────── */}
-      <div style={{
-        width: 220,
-        minWidth: 220,
-        background: "#0f172a",
-        borderRadius: 8,
-        padding: "16px 14px",
-        position: "sticky",
-        top: 64,
-      }}>
-        <div style={{
-          color: "#4ade80",
-          fontSize: 10,
-          fontWeight: 700,
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-          marginBottom: 14,
-          borderBottom: "1px solid #1e293b",
-          paddingBottom: 8,
-        }}>
+      {/* ── RIGHT: manual fields ────────────────────────── */}
+      <div style={{ width: 220, minWidth: 220, background: "#0f172a", borderRadius: 8, padding: "16px 14px", position: "sticky", top: 64 }}>
+        <div style={{ color: "#4ade80", fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14, borderBottom: "1px solid #1e293b", paddingBottom: 8 }}>
           Manual Fields
         </div>
 
-        <div style={{ color: "#475569", fontSize: 10, letterSpacing: "0.06em", marginBottom: 8, textTransform: "uppercase" }}>
-          Court & Compliance
-        </div>
+        <div style={{ color: "#475569", fontSize: 10, letterSpacing: "0.06em", marginBottom: 8, textTransform: "uppercase" }}>Court & Compliance</div>
         <ManualField label="Cases Cleared in Court [B]" fieldKey="B" value={manualFields.B} onChange={updateManual} />
         <ManualField label="Transgressions [L]" fieldKey="L" value={manualFields.L} onChange={updateManual} />
 
-        <div style={{ color: "#475569", fontSize: 10, letterSpacing: "0.06em", margin: "12px 0 8px", textTransform: "uppercase" }}>
-          Traffic Census
-        </div>
+        <div style={{ color: "#475569", fontSize: 10, letterSpacing: "0.06em", margin: "12px 0 8px", textTransform: "uppercase" }}>Traffic Census</div>
         <ManualField label="Buses ≥3500kg" fieldKey="buses" value={manualFields.buses} onChange={updateManual} />
         <ManualField label="Vehicles ≥3500–7000kg" fieldKey="veh3500to7000" value={manualFields.veh3500to7000} onChange={updateManual} />
         <ManualField label="Vehicles ≥7000kg" fieldKey="veh7000plus" value={manualFields.veh7000plus} onChange={updateManual} />
 
-        <div style={{ color: "#475569", fontSize: 10, letterSpacing: "0.06em", margin: "12px 0 8px", textTransform: "uppercase" }}>
-          Report Info
-        </div>
-        <ManualField label="Date" fieldKey="date" value={manualFields.date} onChange={updateManual} type="text" placeholder="e.g. 11/03/2026" />
+        <div style={{ color: "#475569", fontSize: 10, letterSpacing: "0.06em", margin: "12px 0 8px", textTransform: "uppercase" }}>Report Info</div>
+        <ManualField label="Date" fieldKey="date" value={manualFields.date} onChange={updateManual} type="text" placeholder="e.g. 12/03/2026" />
         <ManualField label="Prepared By" fieldKey="preparedBy" value={manualFields.preparedBy} onChange={updateManual} type="text" placeholder="Name" />
         <ManualField label="Approved By" fieldKey="approvedBy" value={manualFields.approvedBy} onChange={updateManual} type="text" placeholder="Name" />
 
-        {/* Generate button */}
         <button
           className={`upload-btn${!hasHswim || busy ? " upload-btn-disabled" : ""}`}
           style={{ margin: "16px 0 0", width: "100%" }}

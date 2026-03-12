@@ -106,4 +106,13 @@ export const SECTIONS = [
     columnWeights: null,
     rotated:       false,
   },
+  {
+    id:            "hswim",
+    title:         "HSWIM Daily Report",
+    endpoint:      null,
+    pdfColumns:    null,
+    columnWeights: null,
+    rotated:       false,
+    custom:        true,
+  },
 ];

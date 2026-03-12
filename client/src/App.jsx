@@ -5,6 +5,7 @@ import { generateImpoundedPDF } from "./utils/generateImpoundedPDF.js";
 import { generatePDF } from "./utils/generatePDF.js";
 import Sidebar from "./components/Sidebar.jsx";
 import UploadSection from "./components/UploadSection.jsx";
+import HswimSection from "./components/HswimSection.jsx";
 
 const SERVER = "https://stream-production-748d.up.railway.app";
 
@@ -47,13 +48,20 @@ export default function App() {
 
       <main className="main-content">
         {SECTIONS.map((section) =>
-          // ✅ only render the section that matches activeId
           section.id === activeId ? (
-            <UploadSection
-              key={section.id}
-              section={section}
-              onStatusChange={handleSectionStatus}
-            />
+            section.custom ? (
+              <HswimSection
+                key={section.id}
+                section={section}
+                onStatusChange={handleSectionStatus}
+              />
+            ) : (
+              <UploadSection
+                key={section.id}
+                section={section}
+                onStatusChange={handleSectionStatus}
+              />
+            )
           ) : null
         )}
       </main>

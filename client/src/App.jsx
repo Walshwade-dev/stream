@@ -1,7 +1,10 @@
 import { useState, useCallback } from "react";
 
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import { SECTIONS } from "./config/sections.js"
+import { generateImpoundedPDF } from "./utils/generateImpoundedPDF.js";
+import { generatePDF } from "./utils/generatePDF.js";
+import Sidebar from "./components/Sidebar.jsx";
+import UploadSection from "./components/UploadSection.jsx";
 
 const SERVER = "https://stream-production-748d.up.railway.app";
 

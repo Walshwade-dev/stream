@@ -12,7 +12,7 @@ import { SERVER } from "../config/sections";
  * @param {function} onResult - called with result when upload succeeds,
  *                              so App/Sidebar can track which sections are ready
  */
-export function UploadSection({ section, onStatusChange, onResult }) {
+export default function UploadSection({ section, onStatusChange, onResult }) {
   const {
     file, dragOver, status, result, errorMsg, inputRef,
     fmt, pickFile, onDragOver, onDragLeave, onDrop, upload, reset,

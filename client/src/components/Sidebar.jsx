@@ -8,7 +8,7 @@ import { SECTIONS } from "../config/sections";
  * @param {function} onGenerate    - called when Generate Report button clicked
  * @param {boolean}  canGenerate   - true when at least one section is ready
  */
-export function Sidebar({
+export default function Sidebar({
   sectionStates,
   activeId,
   onSelect,

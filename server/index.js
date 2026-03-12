@@ -4,10 +4,14 @@ import multer from "multer";
 import Papa from "papaparse";
 import xlsx from "xlsx";
 
+
+import hswimRouter from "./routes/hswim.js";
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
+app.use(hswimRouter);
 
 const REQUIRED_COLUMNS = [
   "Inspection Date",

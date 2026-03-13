@@ -81,7 +81,7 @@ function HourlyTable({ rows, date }) {
   const tdBold = { ...td, fontWeight: "bold" };
 
   const rot = (text) => (
-    <span style={{ display: "block", writingMode: "vertical-rl", transform: "rotate(180deg)", whiteSpace: "pre", fontSize: 10, lineHeight: 1.3, textAlign: "left", margin: "0 auto" }}>
+    <span style={{ display: "block", writingMode: "vertical-lr", transform: "rotate(180deg)", whiteSpace: "pre", fontSize: 10, lineHeight: 1.3, textAlign: "left", margin: "0 auto" }}>
       {text}
     </span>
   );
@@ -91,8 +91,8 @@ function HourlyTable({ rows, date }) {
       <div style={{ color: "#94a3b8", fontSize: 10, letterSpacing: "0.08em", marginBottom: 6, textTransform: "uppercase" }}>
         Hourly Data Preview
       </div>
-      <div className="table-wrapper">
-        <table style={{ borderCollapse: "collapse", tableLayout: "fixed", fontFamily: "Arial, sans-serif" }}>
+      <div className="table-wrapper" style={{overflow: "auto", maxHeight: "none"}}>
+        <table style={{ borderCollapse: "collapse", tableLayout: "fixed", width: "100%", minWidth: 900, fontFamily: "Arial, sans-serif" }}>
           <thead>
             {/* Row 1: group labels */}
             <tr>

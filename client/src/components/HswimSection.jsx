@@ -76,6 +76,8 @@ function HourlyTable({ rows, date }) {
     textAlign: "center", fontFamily: "Arial, sans-serif", fontWeight: "bold", fontSize: 10,
   };
   const thRot = { ...thBase, width: 55, minWidth: 55, padding: "4px 2px", verticalAlign: "bottom", height: "auto" };
+  const thNarrow = { ...thBase, width: 28, minWidth: 28, maxWidth: 30, padding: "4px 1px", verticalAlign: "bottom", height: "auto" };
+  const tdNarrow = { ...td, width: 28, minWidth: 28, maxWidth: 30, padding: "2px 1px" };
   const thWide = { ...thBase, width: 70, minWidth: 70, padding: "4px 2px", verticalAlign: "middle" };
   const td = { background: "#fff", color: "#000", border: "1px solid #000", textAlign: "center", fontFamily: "Arial, sans-serif", fontSize: 10, padding: "2px 1px", whiteSpace: "nowrap" };
   const tdBold = { ...td, fontWeight: "bold" };
@@ -110,21 +112,21 @@ function HourlyTable({ rows, date }) {
             </tr>
             {/* Row 2: sub-column names */}
             <tr>
-              <th style={thRot}>{rot("MULTIDECK\nSCALE")}</th>
-              <th style={thRot}>{rot("WEIGHED\nSAW")}</th>
-              <th style={thRot}>{rot("MANUAL\nLY")}</th>
-              <th style={thRot}>{rot("HSWIM\nTOTAL")}</th>
-              <th style={thRot}>{rot("HSWIM –\nCLEARED")}</th>
-              <th style={thRot}>{rot("TOTAL\nWEIGHED")}</th>
+              <th style={thNarrow}>{rot("MULTIDECK\nSCALE")}</th>
+              <th style={thNarrow}>{rot("WEIGHED\nSAW")}</th>
+              <th style={thNarrow}>{rot("MANUAL\nLY")}</th>
+              <th style={thNarrow}>{rot("HSWIM\nTOTAL")}</th>
+              <th style={thNarrow}>{rot("HSWIM –\nCLEARED")}</th>
+              <th style={thNarrow}>{rot("TOTAL\nWEIGHED")}</th>
             </tr>
             {/* Row 3: key labels */}
             <tr>
-              <th style={thRot}>{rot("(D)")}</th>
-              <th style={thRot}>{rot("(S)")}</th>
-              <th style={thRot}>{rot("(M)")}</th>
-              <th style={thRot}>{rot("(H)")}</th>
-              <th style={thRot}>{rot("Q = H-C")}</th>
-              <th style={thRot}>{rot("X=(D\n+M+S)")}</th>
+              <th style={tdNarrow}>{rot("(D)")}</th>
+              <th style={tdNarrow}>{rot("(S)")}</th>
+              <th style={tdNarrow}>{rot("(M)")}</th>
+              <th style={tdNarrow}>{rot("(H)")}</th>
+              <th style={tdNarrow}>{rot("Q = H-C")}</th>
+              <th style={tdNarrow}>{rot("X=(D\n+M+S)")}</th>
             </tr>
           </thead>
           <tbody>

@@ -75,16 +75,16 @@ function HourlyTable({ rows, date }) {
     background: "#fff", color: "#000", border: "1px solid #000",
     textAlign: "center", fontFamily: "Arial, sans-serif", fontWeight: "bold", fontSize: 10,
   };
-  const thRot = { ...thBase, width: 42, minWidth: 42, maxWidth: 42, height: 90, overflow: "hidden", padding: 0, verticalAlign: "bottom" };
+  const thRot = { ...thBase, width: 55, minWidth: 55, padding: "4px 2px", verticalAlign: "bottom", height: "auto" };
   const thWide = { ...thBase, width: 70, minWidth: 70, padding: "4px 2px", verticalAlign: "middle" };
   const td = { background: "#fff", color: "#000", border: "1px solid #000", textAlign: "center", fontFamily: "Arial, sans-serif", fontSize: 10, padding: "2px 1px", whiteSpace: "nowrap" };
   const tdBold = { ...td, fontWeight: "bold" };
 
   const rot = (text) => (
-    <span style={{ display: "block", writingMode: "vertical-lr", transform: "rotate(180deg)", whiteSpace: "pre", fontSize: 10, lineHeight: 1.3, textAlign: "left", margin: "0 auto" }}>
-      {text}
-    </span>
-  );
+  <span style={{ display: "block", whiteSpace: "pre-line", fontSize: 9, lineHeight: 1.3, textAlign: "center" }}>
+    {text}
+  </span>
+);
 
   return (
     <div style={{ marginBottom: 16 }}>

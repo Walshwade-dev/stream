@@ -71,16 +71,17 @@ function HourlyTable({ rows, date }) {
   const totals = {};
   numKeys.forEach(k => { totals[k] = rows.reduce((s, r) => s + (r[k] || 0), 0); });
 
-  const thBase = {
-    background: "#fff", color: "#000", border: "1px solid #000",
-    textAlign: "center", fontFamily: "Arial, sans-serif", fontWeight: "bold", fontSize: 10,
-  };
-  const thRot = { ...thBase, width: 55, minWidth: 55, padding: "4px 2px", verticalAlign: "bottom", height: "auto" };
-  const thNarrow = { ...thBase, width: 24, minWidth: 24, maxWidth: 26, padding: "4px 1px", verticalAlign: "bottom", height: "auto" };
-  const tdNarrow = { ...td, width: 24, minWidth: 24, maxWidth: 26, padding: "2px 1px" };
-  const thWide = { ...thBase, width: 70, minWidth: 70, padding: "4px 2px", verticalAlign: "middle" };
-  const td = { background: "#fff", color: "#000", border: "1px solid #000", textAlign: "center", fontFamily: "Arial, sans-serif", fontSize: 10, padding: "2px 1px", whiteSpace: "nowrap" };
-  const tdBold = { ...td, fontWeight: "bold" };
+
+const thBase = {
+  background: "#fff", color: "#000", border: "1px solid #000",
+  textAlign: "center", fontFamily: "Arial, sans-serif", fontWeight: "bold", fontSize: 10,
+};
+const td = { background: "#fff", color: "#000", border: "1px solid #000", textAlign: "center", fontFamily: "Arial, sans-serif", fontSize: 10, padding: "2px 1px", whiteSpace: "nowrap" };
+const tdBold = { ...td, fontWeight: "bold" };
+const thRot = { ...thBase, width: 55, minWidth: 55, padding: "4px 2px", verticalAlign: "bottom", height: "auto" };
+const thNarrow = { ...thBase, width: 24, minWidth: 24, maxWidth: 26, padding: "4px 1px", verticalAlign: "bottom", height: "auto" };
+const tdNarrow = { ...td, width: 24, minWidth: 24, maxWidth: 26, padding: "2px 1px" };
+const thWide = { ...thBase, width: 70, minWidth: 70, padding: "4px 2px", verticalAlign: "middle" };
 
   const rot = (text) => (
   <span style={{ display: "block", whiteSpace: "pre-line", fontSize: 9, lineHeight: 1.3, textAlign: "center" }}>
